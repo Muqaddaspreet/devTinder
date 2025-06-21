@@ -4,13 +4,40 @@ const app = express();
 
 // Request Handlers
 
-//This will handle all the http calls to /user
-app.use("/user", (req, res) => {
-  res.send("HAHAHAHAHA!");
-});
+//Optional characters in routes:
+// app.get(/\/.*fly$/, (req, res) => {
+//   res.send("it must end with fly");
+// });
+
+// app.get(/\/a(bc)+d/, (req, res) => {
+//   res.send("bc is optional");
+// });
+
+// app.get(/\/a(bc)?d/, (req, res) => {
+//   res.send("bc is optional");
+// });
+
+// app.get(/\/ab.*cd/, (req, res) => {
+//   res.send("Everything between ab and cd is optional");
+// });
+
+// app.get(/\/ab?c/, (req, res) => {
+//   res.send("b is optional");
+// });
+
+// app.get(/\/ab+c/, (req, res) => {
+//   res.send("b is optional");
+// });
+
+// // This will only hanle GET call to /user
+// app.get("/user", (req, res) => {
+//   console.log(req.query);
+//   res.send({ firstname: "Muqaddaspreet", lastname: "Singh" });
+// });
 
 // This will only hanle GET call to /user
-app.get("/user", (req, res) => {
+app.get("/user/:userID", (req, res) => {
+  console.log(req.params);
   res.send({ firstname: "Muqaddaspreet", lastname: "Singh" });
 });
 
@@ -28,6 +55,11 @@ app.delete("/user", (req, res) => {
 // This will match all the HTTP method API calls to /test
 app.use("/test", (req, res) => {
   res.send("Hello from the server!");
+});
+
+//This will handle all the http calls to /user
+app.use("/user", (req, res) => {
+  res.send("HAHAHAHAHA!");
 });
 
 app.listen(3000, () => {
