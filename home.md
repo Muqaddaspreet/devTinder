@@ -16,8 +16,15 @@
 - Play with routes and route extensions ex-> /hello , /hello/2
 - Order of the routes matter a lot
 - install Postman app and make a workspace/cottection > test API call
-- Write logic to handle GET, POST, PATCH, DELETE API Calls and test them on Postman
+- Write logic to handle GET, POST, PATCH, DELETE API Calls and test them on Postman Middlebrooks
 - Explore routing and use of ? , + ( ) ,\* in the routes
 - Use of regex in routes /a/ , /.\*fly$/
 - Read the query patterns in the routes
 - Read the dynamic routes
+- Multiple route handlers
+- next()
+- next() Function and errors is along with res.send()
+- Middlewares and why do we need them
+- How express js handles requests behind the scenes
+- Difference between app.use() and app.all().
+- write dummy auth middleware for admin and user respectively, but not for user/login route.
