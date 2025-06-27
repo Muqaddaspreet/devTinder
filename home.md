@@ -37,4 +37,5 @@
 - Create a User schema and user Model
 - Create POST /signup API to add data to database
 - Push some documents using API calls from postman
+- Error Handling using try - catch
 -
