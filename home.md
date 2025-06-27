@@ -29,4 +29,12 @@
 - Difference between app.use() and app.all().
 - write dummy auth middleware for admin and user respectively, but not for user/login route.
 - Error handling using app.use("/", (err, req, res, next) => {})
+- Create a cluster on mongoDB official website (Mongo Atlas)
+- Install mongoose
+- Connect the application to the
+  Database "Connection-url"/devTinder
+- Call the connectDB function and connect to the Database before starting the application on 3000
+- Create a User schema and user Model
+- Create POST /signup API to add data to database
+- Push some documents using API calls from postman
 -
