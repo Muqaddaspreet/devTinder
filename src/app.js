@@ -4,14 +4,13 @@ const User = require("./models/user");
 
 const app = express();
 
+app.use(express.json());
+
 app.post("/signup", async (req, res) => {
-  const userObj = {
-    firstName: "Sachin",
-    lastName: "Tendulkar",
-    emailId: "sachin@gmail.com",
-    password: "sachin@123",
-    _id: "471927634587629468908686",
-  };
+  // console.log(req.body);
+
+  // Creating a new instance of the user model
+  const user = new User(req.body);
 
   try {
     await user.save(); // This function will return a promise.
