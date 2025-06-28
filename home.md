@@ -41,3 +41,13 @@
 - Difference between javascript object and JSON
 - Add the express.json Middleware to our app
 - Make our signup API dynamic to receive data from the end user (i.e. Postman)
+- User.findOne() with duplicate emails, the oldest one is returned first.
+- API - Get user by email
+- API - Feed API - GET /feed - get alll the users from the database
+- Create a DELETE user API
+- Difference between PATCH and PUT
+- API - Update a user
+- Explore the mongoose documentation for Model methods
+- options in a Model.findOneAndUpdate() method
+- API - Update a userAPI with emailId
+-
