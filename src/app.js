@@ -58,18 +58,19 @@ app.delete("/user", async (req, res) => {
   }
 });
 
-// Updating the user using DELETE/ hey user with Model.findByIdAndDelete()
+// Updating the user using PATCH/ hey user with Model.findByIdAndDelete()
 app.patch("/user", async (req, res) => {
   const userId = req.body.userId;
   const data = req.body;
   try {
     const user = await User.findByIdAndUpdate({ _id: userId }, data, {
       returnDocument: "after", // After state of the document will be logged to console
+      runValidators: true, // Now validator function will also run for updation.
     });
     console.log(user);
     res.send("User updated successfully!");
   } catch (err) {
-    res.status(400).send("Something went wrong");
+    res.status(400).send("Update failed: " + err.message);
   }
 });
 
