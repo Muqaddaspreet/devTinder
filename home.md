@@ -55,4 +55,9 @@
 - add defaukt
 - Create a Custom validate function for gender
 - Improve the DB schema - Put all appropriate validations on each fielding schema
-- Add timestamps to the userSchema
+- Add timestamps to the userS the chema
+- Add API Based on PATCH request & up PUT request
+- Data Sanitization - Add api validation for each field
+- instal validator
+- Explore npm validator library functions and use them for Password, email, and PhotoURL.
+- NEVER TRUST req.body

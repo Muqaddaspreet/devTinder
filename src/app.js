@@ -59,13 +59,28 @@ app.delete("/user", async (req, res) => {
 });
 
 // Updating the user using PATCH/ hey user with Model.findByIdAndDelete()
-app.patch("/user", async (req, res) => {
-  const userId = req.body.userId;
+app.patch("/user/:userId", async (req, res) => {
+  const userId = req.params?.userId;
   const data = req.body;
+
   try {
+    const ALLOWED_UPDATES = ["photoUrl", "about", "gender", "age", "skills"];
+
+    const isUpdateAllowed = Object.keys(data).every(
+      (k) => ALLOWED_UPDATES.includes(k) // Looping through each and every field of the data obj that the user wants to Update
+    );
+
+    if (!isUpdateAllowed) {
+      throw new Error("Update not allowed!");
+    }
+
+    if (data?.skills.length > 15) {
+      throw new Error("Skills cannot be more than 15!");
+    }
+
     const user = await User.findByIdAndUpdate({ _id: userId }, data, {
       returnDocument: "after", // After state of the document will be logged to console
-      runValidators: true, // Now validator function will also run for updation.
+      runValidators: true, // Now valida                                        tor function will also run for updation.
     });
     console.log(user);
     res.send("User updated successfully!");
