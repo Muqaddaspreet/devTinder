@@ -58,6 +58,17 @@
 - Add timestamps to the userS the chema
 - Add API Based on PATCH request & up PUT request
 - Data Sanitization - Add api validation for each field
-- instal validator
+- install validator
 - Explore npm validator library functions and use them for Password, email, and PhotoURL.
-- NEVER TRUST req.body
+- NEVER TRUST req.body -> Always keep validations
+- Validate data in SignUp API
+- Install bcrypt package
+- Create passwordHash usinh bcrypt.hash & save the user with encrypted password
+- Create login api
+- Compare passwords and throw errors if email and password is invalid.
+- Install cokkie-parser
+- Just send a dummy cookie to the user
+- Create GET /profile API and check if we get the cookie back
+- Install jsonwebtoken
+- In login API, after email and password validation, create a jwt token and send it to the user inside a cookie
+- Read the cookies inside our GET /profile API and find the logged in user

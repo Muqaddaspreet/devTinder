@@ -1,22 +1,112 @@
 const express = require("express");
 const connectDB = require("./config/database");
 const User = require("./models/user");
+const { validateSignUpData } = require("./utils/validation");
+const bcrypt = require("bcrypt");
+const validator = require("validator");
+const cookieParser = require("cookie-parser");
+const jwt = require("jsonwebtoken");
 
 const app = express();
 
 app.use(express.json());
+app.use(cookieParser());
 
 app.post("/signup", async (req, res) => {
-  // console.log(req.body);
-
-  // Creating a new instance of the user model
-  const user = new User(req.body);
-
   try {
+    // Validation of data
+    validateSignUpData(req);
+
+    const { firstName, lastName, email, password } = req.body;
+    // Encrypt the password
+    const passwordHash = await bcrypt.hash(req.body.password, 10);
+    console.log(passwordHash);
+
+    // console.log(req.body);
+
+    // Creating a new instance of the user model
+    const user = new User({
+      firstName,
+      lastName,
+      email,
+      password: passwordHash, // Storing the encrypted password in the database
+    });
     await user.save(); // This function will return a promise.
     res.send("User added successfully");
   } catch (err) {
     res.status(400).send("Error saving the user. " + err.message);
+  }
+});
+
+// Login the user
+app.post("/login", async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    if (!email || !password) {
+      throw new Error("Email and password are required.");
+    } else if (!validator.isEmail(email)) {
+      throw new Error("A valid email is required.");
+    }
+
+    const user = await User.findOne({ email: email });
+    if (!user) {
+      throw new Error("User not found with this email.");
+    }
+
+    const isPasswordMatch = await bcrypt.compare(password, user.password);
+    if (!isPasswordMatch) {
+      throw new Error("Incorrect password.");
+    }
+
+    // Create a JWT token
+    const token = jwt.sign(
+      { _id: user._id },
+      "DEV@TINDER$2000" /*{
+      expiresIn: "1h",
+    }*/
+    );
+    console.log("Generated JWT Token:", token);
+    // Add the token to the cookie and send the response back to the user.
+    res.cookie("session_token", token);
+    res.send("User logged in successfully!");
+  } catch (err) {
+    res.status(400).send("User login failed: " + err.message);
+  }
+});
+
+// Get the profile
+app.get("/profile", async (req, res) => {
+  try {
+    // Authentication
+    const cookies = req.cookies;
+    console.log("Cookie :", cookies);
+    const { session_token } = cookies;
+    console.log(session_token);
+
+    // // Validate the token:
+    // if (!session_token || session_token !== "dummy_session_token") {
+    //   return res.status(401).send("Unauthorized: Invalid or missing token");
+    // }
+
+    const decodedMessage = jwt.verify(session_token, "DEV@TINDER$2000"); // We pass the same secret key here that we used to create the token.
+
+    if (!session_token || !decodedMessage) {
+      throw new Error("Invalid or missing token");
+    }
+
+    console.log(decodedMessage);
+    const { _id } = decodedMessage;
+    console.log("User ID from of the logged in user from token:", _id);
+    // Fetch the user profile from the database using the user ID
+    const user = await User.findById(_id);
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    res.send("User profile data: " + user);
+    // Authorization
+  } catch (err) {
+    res.status(401).send("Unauthorized: " + err.message);
   }
 });
 
