@@ -6,12 +6,14 @@ const bcrypt = require("bcrypt");
 const validator = require("validator");
 const cookieParser = require("cookie-parser");
 const jwt = require("jsonwebtoken");
+const { userAuth } = require("./middlewares/auth");
 
 const app = express();
 
 app.use(express.json());
 app.use(cookieParser());
 
+// Register the user
 app.post("/signup", async (req, res) => {
   try {
     // Validation of data
@@ -53,21 +55,28 @@ app.post("/login", async (req, res) => {
       throw new Error("User not found with this email.");
     }
 
-    const isPasswordMatch = await bcrypt.compare(password, user.password);
+    const isPasswordMatch = await user.validatePassword(password);
     if (!isPasswordMatch) {
       throw new Error("Incorrect password.");
     }
 
-    // Create a JWT token
-    const token = jwt.sign(
-      { _id: user._id },
-      "DEV@TINDER$2000" /*{
-      expiresIn: "1h",
-    }*/
-    );
+    // // Create a JWT token
+    // const token = jwt.sign({ _id: user._id }, "DEV@TINDER$2000", {
+    //   expiresIn: "365d",
+    // });
+
+    // Get the jwt token using the method we created in user model
+    const token = await user.getJWT();
+
     console.log("Generated JWT Token:", token);
     // Add the token to the cookie and send the response back to the user.
-    res.cookie("session_token", token);
+    res.cookie("session_token", token, {
+      httpOnly: true,
+      expires: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000), // 1 year
+
+      // secure: true, // Uncomment this line when using HTTPS
+      // maxAge: 365 * 24 * 60 * 60 * 1000, // 1 year
+    });
     res.send("User logged in successfully!");
   } catch (err) {
     res.status(400).send("User login failed: " + err.message);
@@ -75,38 +84,52 @@ app.post("/login", async (req, res) => {
 });
 
 // Get the profile
-app.get("/profile", async (req, res) => {
+app.get("/profile", userAuth, async (req, res) => {
   try {
-    // Authentication
-    const cookies = req.cookies;
-    console.log("Cookie :", cookies);
-    const { session_token } = cookies;
-    console.log(session_token);
+    // // Authentication
+    // const cookies = req.cookies;
+    // console.log("Cookie :", cookies);
+    // const { session_token } = cookies;
+    // console.log(session_token);
 
-    // // Validate the token:
-    // if (!session_token || session_token !== "dummy_session_token") {
-    //   return res.status(401).send("Unauthorized: Invalid or missing token");
+    // // // Validate the token:
+    // // if (!session_token || session_token !== "dummy_session_token") {
+    // //   return res.status(401).send("Unauthorized: Invalid or missing token");
+    // // }
+
+    // const decodedMessage = jwt.verify(session_token, "DEV@TINDER$2000"); // We pass the same secret key here that we used to create the token.
+
+    // if (!session_token || !decodedMessage) {
+    //   throw new Error("Invalid or missing token");
     // }
 
-    const decodedMessage = jwt.verify(session_token, "DEV@TINDER$2000"); // We pass the same secret key here that we used to create the token.
+    // console.log(decodedMessage);
+    // const { _id } = decodedMessage;
+    // console.log("User ID from of the logged in user from token:", _id);
+    // // Fetch the user profile from the database using the user ID
+    // const user = await User.findById(_id);
 
-    if (!session_token || !decodedMessage) {
-      throw new Error("Invalid or missing token");
-    }
+    const user = req.user; // We get the user object from the auth middleware
 
-    console.log(decodedMessage);
-    const { _id } = decodedMessage;
-    console.log("User ID from of the logged in user from token:", _id);
-    // Fetch the user profile from the database using the user ID
-    const user = await User.findById(_id);
-    if (!user) {
-      throw new Error("User not found");
-    }
+    // if (!user) {
+    //   throw new Error("User not found");
+    // }
 
     res.send("User profile data: " + user);
-    // Authorization
   } catch (err) {
     res.status(401).send("Unauthorized: " + err.message);
+  }
+});
+
+// Send the connection request
+app.post("/sendConnectionRequest", userAuth, async (req, res) => {
+  try {
+    const user = req.user; // We get the user object from the auth middleware
+    // Sending a connection request
+    console.log("Sending a connection request");
+    res.send(user?.firstName + " sent the connection request successfully!");
+  } catch (err) {
+    res.status(400).send("Error: " + err.message);
   }
 });
 
