@@ -80,6 +80,7 @@ userSchema.methods.getJWT = async function () {
   const token = jwt.sign({ _id: user._id }, "DEV@TINDER$2000", {
     expiresIn: "365d",
   });
+  return token;
 };
 
 userSchema.methods.validatePassword = async function (passwordInputByUser) {
