@@ -89,4 +89,13 @@
 - Create PATCH /profil/edit
 - Create PATCH /profile/password API => Forgot password API
 - Make sure you validate all data in every POST, PATCH APIs
--
+
+- Create connexion request schema
+- Send connexion request API
+- Think about all corner cases and handle them
+- $or and $and query in mongodb
+- Read about inverse queries. Ex=> Find all users where email!= "xyz@gmail.com"
+- schema.pre("save", function () {}) function
+- Read the article about Compound indexes
+- Why do we need an index in database?
+- What are the advantages and disadvantages of indexing?
