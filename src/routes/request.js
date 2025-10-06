@@ -66,4 +66,43 @@ requestRouter.post(
   }
 );
 
+// Accept or Reject the connection request
+requestRouter.post(
+  "/request/review/:status/:requestId",
+  userAuth,
+  async (req, res) => {
+    try {
+      const user = req.user; // We get the user object from the auth middleware
+      const requestId = req.params.requestId;
+      const status = req.params.status; // accepted or rejected
+
+      const allowedStatus = ["accepted", "rejected"];
+      if (!allowedStatus.includes(status)) {
+        throw new Error(
+          `Invalid status type: ${status}. Allowed values are 'accepted' or 'rejected'.`
+        );
+      }
+
+      const connectionRequest = await ConnectionRequest.findOne({
+        _id: requestId,
+        receiverId: user._id, // Ensure that the logged-in user is the receiver of the request
+        status: "interested", // Only interested requests can be accepted or rejected
+      });
+      if (!connectionRequest) {
+        throw new Error("Connection request not found!");
+      }
+
+      // Update the status of the connection request from the API params
+      connectionRequest.status = status;
+      const data = await connectionRequest.save();
+      res.json({
+        message: `Connection request ${status} successfully!`,
+        data,
+      });
+    } catch (err) {
+      res.status(400).send("Error: " + err.message);
+    }
+  }
+);
+
 module.exports = requestRouter;

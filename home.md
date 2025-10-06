@@ -99,3 +99,9 @@
 - Read the article about Compound indexes
 - Why do we need an index in database?
 - What are the advantages and disadvantages of indexing?
+
+- Code this API -> POST /request/review/:status/:requestId with proper validations
+- Thought process => POST vs GET API
+- Read about ref and populate
+- Create GET /user/requests/received
+- Create GET /user/connections
