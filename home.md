@@ -105,3 +105,5 @@
 - Read about ref and populate
 - Create GET /user/requests/received
 - Create GET /user/connections
+- Logic for GET/feed API
+- Explore the $nin, $and, $ne, and other comparison query operators
