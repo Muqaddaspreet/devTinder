@@ -37,8 +37,7 @@ profileRouter.get("/profile/view", userAuth, async (req, res) => {
     // if (!user) {
     //   throw new Error("User not found");
     // }
-
-    res.send("User profile data: " + user);
+    res.json({ message: "User profile data", user });
   } catch (err) {
     res.status(401).send("Unauthorized: " + err.message);
   }
@@ -60,7 +59,7 @@ profileRouter.patch("/profile/edit", userAuth, async (req, res) => {
     await user.save();
     res.json({ message: "User profile updated successfully!", data: user });
   } catch (err) {
-    res.status(400).send("Error: " + err.message);
+    res.status(400).send("Error: " + err.response.data);
   }
 });
 
@@ -73,7 +72,7 @@ profileRouter.patch("/profile/password", userAuth, async (req, res) => {
     }
     if (!validator.isStrongPassword(newPassword)) {
       throw new Error(
-        "Password must be at least 8 characters long and include at least one uppercase letter, one lowercase letter, one number, and one symbol."
+        "Password must be at least 8 characters long and include at least one uppercase letter, one lowercase letter, one number, and one symbol.",
       );
     }
     if (oldPassword === newPassword) {

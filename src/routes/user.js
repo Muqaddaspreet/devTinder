@@ -5,6 +5,7 @@ const User = require("../models/user");
 const userRouter = express.Router();
 
 const USER_SAFE_DATA = "firstName lastName photoUrl age gender about skills";
+
 // Get all the pending connection requests for the logged-in user
 userRouter.get("/user/requests/received", userAuth, async (req, res) => {
   try {
@@ -16,7 +17,7 @@ userRouter.get("/user/requests/received", userAuth, async (req, res) => {
     }).populate(
       "senderId",
       //   "firstName lastName photoUrl age gender about skills"
-      USER_SAFE_DATA
+      USER_SAFE_DATA,
     ); // Populate sender details
 
     // If no connection requests found, return a message

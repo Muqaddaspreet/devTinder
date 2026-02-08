@@ -70,7 +70,10 @@ authRouter.post("/login", async (req, res) => {
       // secure: true, // Uncomment this line when using HTTPS
       // maxAge: 365 * 24 * 60 * 60 * 1000, // 1 year
     });
-    res.send("User logged in successfully!");
+    res.json({
+      message: "User logged in successfully!",
+      user,
+    });
   } catch (err) {
     res.status(400).send("User login failed: " + err.message);
   }

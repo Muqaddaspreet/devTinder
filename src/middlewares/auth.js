@@ -35,7 +35,7 @@ const userAuth = async (req, res, next) => {
     req.user = user; // Attach the user object to the request for further use.
     next();
   } catch (err) {
-    return res.status(400).send("ERROR: " + err.message);
+    return res.status(401).send("ERROR: " + err.message);
   }
 };
 module.exports = { /*adminAuth,*/ userAuth };
