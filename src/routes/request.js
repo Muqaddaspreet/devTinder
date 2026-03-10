@@ -3,6 +3,7 @@ const express = require("express");
 const { userAuth } = require("../middlewares/auth");
 const ConnectionRequest = require("../models/connectionRequest");
 const User = require("../models/user");
+const { run } = require("../utils/sendEmail");
 
 const requestRouter = express.Router();
 
@@ -21,7 +22,7 @@ requestRouter.post(
 
       if (!allowedStatus.includes(status)) {
         throw new Error(
-          `Invalid status type: ${status}. Allowed values are 'ignored' or 'interested'.`
+          `Invalid status type: ${status}. Allowed values are 'ignored' or 'interested'.`,
         );
       }
 
@@ -56,6 +57,14 @@ requestRouter.post(
       });
 
       const data = await connectionRequest.save();
+
+      // Send an email notification to the receiver
+      const emailResult = await run(toUser.email, "New Connection Request", {
+        name: toUser.firstName,
+        fromUserName: user.firstName,
+      });
+      console.log("Email sent result: ", emailResult);
+
       res.json({
         message: `Connection request sent to ${toUser.firstName} by ${user.firstName} successfully with status: ${status}!`,
         data,
@@ -63,7 +72,7 @@ requestRouter.post(
     } catch (err) {
       res.status(400).send("Error: " + err.message);
     }
-  }
+  },
 );
 
 // Accept or Reject the connection request
@@ -79,7 +88,7 @@ requestRouter.post(
       const allowedStatus = ["accepted", "rejected"];
       if (!allowedStatus.includes(status)) {
         throw new Error(
-          `Invalid status type: ${status}. Allowed values are 'accepted' or 'rejected'.`
+          `Invalid status type: ${status}. Allowed values are 'accepted' or 'rejected'.`,
         );
       }
 
@@ -102,7 +111,7 @@ requestRouter.post(
     } catch (err) {
       res.status(400).send("Error: " + err.message);
     }
-  }
+  },
 );
 
 module.exports = requestRouter;

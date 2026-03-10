@@ -4,6 +4,7 @@ const User = require("./models/user");
 const cookieParser = require("cookie-parser");
 const jwt = require("jsonwebtoken");
 const cors = require("cors");
+require("dotenv").config();
 const app = express();
 
 app.use(
@@ -111,8 +112,10 @@ app.use("/", userRouter);
 connectDB()
   .then(() => {
     console.log(" Database connection established...");
-    app.listen(3000, () => {
-      console.log("Server is successfully listening on port 3000...");
+    app.listen(process.env.PORT, () => {
+      console.log(
+        "Server is successfully listening on port " + process.env.PORT + "...",
+      );
     });
   })
   .catch((err) => {

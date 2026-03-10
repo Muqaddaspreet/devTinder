@@ -22,7 +22,7 @@ const userAuth = async (req, res, next) => {
       throw new Error("Token not found");
     }
     // Validate the token.
-    const decodedObj = jwt.verify(session_token, "DEV@TINDER$2000");
+    const decodedObj = jwt.verify(session_token, process.env.JWT_SECRET_KEY);
     if (!decodedObj) {
       throw new Error("Invalid token");
     }
