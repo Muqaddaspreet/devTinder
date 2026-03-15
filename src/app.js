@@ -5,6 +5,7 @@ const cookieParser = require("cookie-parser");
 const jwt = require("jsonwebtoken");
 const cors = require("cors");
 require("dotenv").config();
+require("./utils/cronjob"); // Importing the cronjob to start it when the server starts.
 const app = express();
 
 app.use(
